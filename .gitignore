@@ -1,0 +1,4 @@
+node_modules/
+google-cloud-creds.json
+google-cloud-token.json
+spreadsheet-data.json
