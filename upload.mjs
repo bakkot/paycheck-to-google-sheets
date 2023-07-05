@@ -53,10 +53,18 @@ if (!fs.existsSync(dir)) {
 let auth = await authorize();
 let sheets = googleapis.google.sheets({version: 'v4', auth});
 
-let existingDates = (await sheets.spreadsheets.values.get({
-  spreadsheetId,
-  range: `${columns.date}:${columns.date}`,
-})).data.values.map(v => v[0]);
+
+let sheetData;
+try {
+  0, { data: sheetData } = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${columns.date}:${columns.date}`,
+  });
+} catch (e) {
+  console.error('!!! Reading spreadsheet failed, possibly due to expired auth token; try deleting google-cloud-token.json and re-running');
+  throw e;
+}
+let existingDates = sheetData.values.map(v => v[0]);
 
 let existingDatesSet = new Set(existingDates);
 
